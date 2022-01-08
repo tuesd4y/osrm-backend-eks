@@ -13,8 +13,22 @@ docker run -d -p 5000:5000 \
 -e OSRM_S3_BUCKET='s3://triply-routing-data' \
 -e OSRM_AWS_ACCESS_KEY_ID='YOUR_ACCESS_KEY' \
 -e OSRM_AWS_SECRET_ACCESS_KEY='YOUR/SECRET' \
+-e OSRM_WEBHOOK_URL='https://example.com/post' \
 --name osrm-backend tuesd4y/osrm-backend-eks:latest
 ```
+
+In the create mode, if `OSRM_WEBHOOK_URL` is set, the following body is posted to the given URL.
+
+```json
+{
+  "label":"$OSRM_DATA_LABEL", 
+  "mode":"$OSRM_GRAPH_PROFILE",
+  "source":"$OSRM_PBF_URL",
+  "target":"$OSRM_S3_BUCKET/$OSRM_DATA_LABEL"
+}
+```
+
+If `OSRM_EXIT_AFTER_UPLOAD` is set to anything not-empty, an OSRM instance is started on port 5000 after the graph is built and uploaded. Otherwise, the container exists after the graph is built and uploaded to the S3 bucket.
 
 ### Downloading a pre-built graph and starting routing
 
@@ -44,6 +58,8 @@ Check that the router is running by looking at the responses here of a routing r
 | `OSRM_GRAPH_PROFILE` | `car` | Transport mode to use for creating the routing graph |
 | `OSRM_PBF_URL` | <http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf> | URL from where to load the graph to build (only used in `CREATE` mode) |
 | `OSRM_MAX_TABLE_SIZE` | `8000` | `max-table-size` parameter to be passed to the `osrm-routed` script |
+| `OSRM_WEBHOOK_URL` | - | webhook that's called after data has been uploaded to S3 (only used in `CREATE` mode) |
+| `OSRM_EXIT_AFTER_UPLOAD` | - | If the docker container should exit after the graph is built (only used in `CREATE` mode), if set to empty, the container serves an OSRM instance on port 5000 |
 
 ### AWS-specific configuration
 
@@ -53,6 +69,17 @@ Check that the router is running by looking at the responses here of a routing r
 | `OSRM_AWS_REGION` | `eu-central-1` | AWS region the bucket is located in |
 | `OSRM_AWS_ACCESS_KEY_ID` | - | Access key id to be used for accessing the S3 bucket |
 | `OSRM_AWS_SECRET_ACCESS_KEY` | - | Secret access key to be used for accessing the S3 bucket |
+
+## Changelog
+
+### v1.1
+
+- Add webhook (enabled by setting `OSRM_WEBHOOK_URL`) to `CREATE` mode
+- Allow configuring if the OSRM instance should run after data has been uploaded in `CREATE` by setting `OSRM_EXIT_AFTER_UPLOAD`
+
+### v1
+
+- Initial release
 
 ## License
 
