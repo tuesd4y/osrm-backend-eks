@@ -55,7 +55,7 @@ Check that the router is running by looking at the responses here of a routing r
 | `OSRM_MODE`| `CREATE` | Defines if a new graph should be created (`CREATE`) or an existing one should be downloaded (`LOAD`) |
 | `OSRM_DATA_PATH` | `/osrm-data` | Path to store the downloaded osm files and built graph |
 | `OSRM_DATA_LABEL` | `data` | Name under which the built graph should be stored or loaded from in the S3 bucket |
-| `OSRM_GRAPH_PROFILE` | `car` | Transport mode to use for creating the routing graph |
+| `OSRM_GRAPH_PROFILE` | `car` | Profile to use for creating the routing graph (see [here](https://github.com/Project-OSRM/osrm-backend/tree/master/profiles) for available profiles)|
 | `OSRM_PBF_URL` | <http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf> | URL from where to load the graph to build (only used in `CREATE` mode) |
 | `OSRM_MAX_TABLE_SIZE` | `8000` | `max-table-size` parameter to be passed to the `osrm-routed` script |
 | `OSRM_WEBHOOK_URL` | - | webhook that's called after data has been uploaded to S3 (only used in `CREATE` mode) |
